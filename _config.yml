@@ -10,9 +10,9 @@ title: "Hello I'm Marvin"
 # email: larrysu1115@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Hello World  
-baseurl: "" 
+baseurl: "myJekyllBlog" 
 # the subpath of your site, e.g. /blog
-url: "http://ddtwu.github.io/myJekyllBlog" 
+url: "http://ddtwu.github.io/" 
 # the base hostname & protocol for your site
 
 #twitter_username: jekyllrb
