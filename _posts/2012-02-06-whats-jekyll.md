@@ -9,4 +9,6 @@ title: What's Jekyll?
 
 It's an immensely useful tool and one we encourage you to use here with Hyde.
 
+# Hi hi
+
 Find out more by [visiting the project on GitHub](https://github.com/mojombo/jekyll).
