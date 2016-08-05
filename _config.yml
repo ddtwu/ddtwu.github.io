@@ -1,27 +1,26 @@
-# Dependencies
-markdown:         redcarpet
-highlighter:      pygments
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely need to edit after that.
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'jekyll serve'. If you change this file, please restart the server process.
 
-# Permalinks
-permalink:        pretty
-#relative_permalinks: true
+# Site settings
+title: "Hello I'm Marvin"
+# email: larrysu1115@gmail.com
+description: > # this means to ignore newlines until "baseurl:"
+  Hello World  
+baseurl: "/myJekyllBlog" 
+# the subpath of your site, e.g. /blog
+url: "http://ddtwu.github.io" 
+# the base hostname & protocol for your site
 
-# Setup
-title:            Hyde
-tagline:          'A Jekyll theme'
-description:      'A brazen two-column <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that pairs a prominent sidebar with uncomplicated content. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
-baseurl: "/myJekyllBlog/"
-url:              http://github.com
-baseurl:          /
+#twitter_username: jekyllrb
+github_username:  ddtwu
 
-author:
-  name:           'Mark Otto'
-  url:            https://twitter.com/mdo
-
-paginate:         5
-
-# Custom vars
-version:          2.1.0
-
-github:
-  repo:           https://github.com/ddtwu/myJekyllBlog
+# Build settings
+markdown            : kramdown
+kramdown:
+  input: GFM 
+  # Enable GitHub Flavored Markdown (fenced code blocks)
+  syntax_highlighter: rouge
