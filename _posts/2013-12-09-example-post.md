@@ -2,10 +2,11 @@
 layout: post
 title: Example post
 # cover: cover.jpg
-# cover: P_20160826_075412.jpg
+cover: P_20160826_075412.jpg
 date:   2013-12-09 12:00:00
 categories: posts
 ---
+中文測試
 
 ## Introducing Flex, a Jekyll theme
 
