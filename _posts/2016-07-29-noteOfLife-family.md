@@ -5,7 +5,7 @@ title: 2016-07-19 test
 date:   2016-07-29 12:00:00
 categories: posts
 ---
-7-19 預產期到了，前往合泰婦產科催生，接近中午還被護士趕去吃飯，只好怒吃一發涮涮鍋儲備體力，13:00 第一次塞催生藥。
+> 7-19 預產期到了，前往合泰婦產科催生，接近中午還被護士趕去吃飯，只好怒吃一發涮涮鍋儲備體力，13:00 第一次塞催生藥。  
 <img src="/images/2016-07-29-noteOfLife-family/g1.jpg">
 
 下午老婆僅有略為不適，媽媽下午五點來探望，岳父岳母晚上八點來，這時候精神都還很好，也可以下床趴趴走。晚上十點破水，護士告知身體會開始啟動自然的生產程序....就是要開始痛了
@@ -20,7 +20,7 @@ categories: posts
 
 不得不說剛生出來的寶寶真的不是很賞心悅目，還好經由辛苦的新手媽媽哺餵母乳，妹子健健康康的成長(充氣)中
 <img src="/images/2016-07-29-noteOfLife-family/g5.jpg">
-<img src="/images/2016-07-29-noteOfLife-family/g5.jpg">
+<img src="/images/2016-07-29-noteOfLife-family/g6.jpg">
 <img src="/images/2016-07-29-noteOfLife-family/g7.jpg">
 
 母嬰同室時拍下的小短片：[Link](https://youtu.be/OzVjfjYwxhQ)
