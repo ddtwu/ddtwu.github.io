@@ -9,7 +9,7 @@ categories: posts
 <img src="/images/2016-07-29-noteOfLife-family/g1.jpg" width="640" height="480">
 
 > 下午老婆僅有略為不適，媽媽下午五點來探望，岳父岳母晚上八點來，這時候精神都還很好，也可以下床趴趴走。晚上十點破水，護士告知身體會開始啟動自然的生產程序....就是要開始痛了  
-<img src="/images/2016-07-29-noteOfLife-family/g2.jpg" width="80" height="80">
+<img src="/images/2016-07-29-noteOfLife-family/g2.jpg" width="800" height="600">
 
 > 半夜兩點半終於可以打無痛，等待醫生的過程中，老婆很勇敢，沒有大吼大叫或是動手動腳，僅是努力地扭曲身體抵抗子宮收縮的疼痛，身為丈夫也是始作俑者，這是我40W以來最難熬的六個小時....  
 <img src="/images/2016-07-29-noteOfLife-family/g3.jpg" width="480" height="640">
