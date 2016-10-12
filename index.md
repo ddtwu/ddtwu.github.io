@@ -1,5 +1,5 @@
 ---
-title: Keep on Fighting!
+title: Be Proactive!!
 layout: page
 ---
 
