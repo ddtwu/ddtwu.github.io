@@ -4,6 +4,8 @@ layout: page
 comments: yes
 ---
 
+<img id="headImage" src="/images/headImage.png" style="width:150px;height:150px;">
+
 # Who am I ?
 從大學就讀統計系開始與數據扯上關係，似懂非懂，走到現在慢慢琢磨出一個方向。使用 R 解決問題，喜歡將程序實做出來，不期許自己成為碼農，但是要有基本的應用能力，最重要的是對於問題的理解與觀點。
 
