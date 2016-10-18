@@ -2,7 +2,7 @@
 title: "使用R擷取中央氣象局資料"
 output: html_document
 layout: post
-date:   2016-10-01 12:00:00
+date:   2016-10-02
 categories: posts
 ---
 
