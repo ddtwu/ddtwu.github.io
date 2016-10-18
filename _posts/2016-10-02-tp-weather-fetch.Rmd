@@ -169,40 +169,6 @@ weatherDate3 %>%
 
 ***
 
-額外測試一下_plotly_包的效果:
-
-```{r}
-ggplotly(
-  weatherDate3 %>% 
-  filter(cdate >= as.Date('2016-09-26') & cdate <= as.Date('2016-09-29')) %>% 
-  select(station, ctime, Precp, WS) %>% 
-  gather(key = 'vType', value = 'value', -c(1,2)) %>%
-  mutate(value = ifelse(is.na(value), 0, value), ctime = as.POSIXct(strptime(ctime, format = '%Y-%m-%d %H:%M:%S'))) %>% 
-  arrange(station, vType, ctime) %>% {
-   
-    flabels <- c('Precp' = '降水量', 'WS' = '風速')
-    lim <- as.POSIXct(c(strptime('2016-09-26 00:00:00', format = '%Y-%m-%d %H:%M:%S'), strptime('2016-09-30 00:00:00', format = '%Y-%m-%d %H:%M:%S')))
-    
-    ggplot(data = ., aes(x = ctime, y = value, group = station, colour = station)) +
-      geom_line(size = 1.5) + 
-      labs(x = '', y = '', title = '2016-09-26~2016-09-29 逐時氣象資料') +
-      facet_grid(vType~., scales = 'free_y', labeller = as_labeller(flabels)) +
-      theme_bw() +
-      theme(strip.text = element_text(size = 10, face = 'bold'),
-            title = element_text(size = 10, face = 'bold'),
-            legend.text = element_text(size = 10, face = 'bold'),
-            axis.text.x = element_text(angle = 90)) +
-      geom_hline(data = data.frame(vType = 'WS'), aes(yintercept = 5), linetype = 2, colour = 'grey50') +
-      annotate("rect", xmin = as.POSIXct(strptime('2016-09-27', format = '%Y-%m-%d')), xmax = as.POSIXct(strptime('2016-09-29', format = '%Y-%m-%d')), ymin=0, ymax=Inf, alpha=0.2, fill="red") +
-      scale_x_datetime(limits = lim, breaks = date_breaks("6 hour"), labels = date_format("%m/%d %H:%M", tz = 'Asia/Taipei')) +
-      annotate('text', label = '颱風假:09-27~09-28', x = as.POSIXct(strptime('2016-09-29', format = '%Y-%m-%d')), y = Inf, vjust = 2, hjust = 1)
-  }
-)
-
-```
-
-***
-
 ##### **Reference Code**
 Loop process:
 
