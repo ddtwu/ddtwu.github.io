@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Rmd的轉換測試"
+title:  "使用 R 擷取中央氣象局資料"
 date:   2016-10-03
 categories: posts
 output: html_document
@@ -9,25 +9,14 @@ output: html_document
 最近因為工作需要，老闆好奇天氣資料與門店人流或銷售數字的關聯性，看了中央氣象局的[資料申購方法](http://e-service.cwb.gov.tw/wdps/cwb_fee.htm)，為了做個簡單的POC就得花錢買詳細的氣象資料，似乎太大張旗鼓了。還好，氣象局的[觀測資料查詢系統](http://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp)可以提供手動查詢部分氣象站的資訊，觀察網頁的URL，只要進行日期的替換就可以做特定時間的查詢，而且產出的頁面也是整齊的表格，正好可以測試使用R爬取網頁資料的程序。
 
 
-```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
-# Load required packages
-.libPaths(c("d:/0.R_packages", .libPaths()))
-pkgs <- c('data.table', "plyr", "magrittr", 'reshape2', 'lubridate', 'ggplot2', 'dplyr', 'tidyr', 'stringr')
-suppressPackageStartupMessages(lapply(pkgs, library, character.only=T, lib.loc = .libPaths()[1]))
 
-library(RCurl)
-library(XML)
-library(httr)
-library(scales)
-library(plotly)
-
-```
 
 ***
 
 先做一次性的測試:  
 
-```{r warning=FALSE, eval=TRUE}
+
+{% highlight r %}
 # 先設定好站點編號
 stationID <- '466930'
 
@@ -68,20 +57,45 @@ weatherMonth %<>% filter(row.names(weatherMonth) != 1)
 weatherMonth %<>% mutate_each(funs(as.numeric(as.character(.)))) %>% arrange(V1) 
 names(weatherMonth) <- tbNames
 weatherMonth %<>% mutate(station = '竹子湖', cdate = as.Date(str_c(fmonth, ObsTime, sep = '-')))
-
-```
+{% endhighlight %}
 
 ***
 
 確認結果表都有抓到:
-```{r , eval=TRUE}
+
+{% highlight r %}
 # 日報(逐小時的紀錄)
 weatherDate %>% head() %>% select(c(1:10)) %>% knitr::kable()
+{% endhighlight %}
 
+
+
+| ObsTime| StnPres| SeaPres| Temperature| TdDewPoint| RH|  WS|  WD| WSGust| WDGust|
+|-------:|-------:|-------:|-----------:|----------:|--:|---:|---:|------:|------:|
+|       1|   938.6|  1007.0|        22.0|       17.8| 77| 0.6|  10|    2.7|     30|
+|       2|   938.1|  1006.6|        21.3|       18.0| 81| 0.7| 360|    2.2|    350|
+|       3|   937.7|  1005.9|        22.4|       16.7| 70| 1.5| 340|    4.3|    300|
+|       4|   937.6|  1005.8|        22.4|       16.5| 69| 0.9| 320|    6.7|    300|
+|       5|   937.7|  1005.9|        22.2|       17.1| 73| 0.8| 340|    5.5|    320|
+|       6|   937.7|  1006.1|        21.6|       17.6| 78| 0.5| 330|    4.4|    290|
+
+
+
+{% highlight r %}
 # 月報(逐日的紀錄)
 weatherMonth %>% head() %>% select(c(1:10)) %>% knitr::kable()
+{% endhighlight %}
 
-```
+
+
+| ObsTime| StnPres| SeaPres| StnPresMax| StnPresMaxTime| StnPresMin| StnPresMinTime| Temperature| TMax| TMaxTime|
+|-------:|-------:|-------:|----------:|--------------:|----------:|--------------:|-----------:|----:|--------:|
+|       1|   937.6|  1005.3|      939.1|             NA|      935.8|             NA|        24.4| 29.0|       NA|
+|       2|   936.9|  1004.7|      937.8|             NA|      935.7|             NA|        23.5| 29.2|       NA|
+|       3|   937.9|  1005.8|      939.3|             NA|      936.4|             NA|        23.7| 27.1|       NA|
+|       4|   939.4|  1007.1|      940.8|             NA|      938.1|             NA|        24.9| 28.3|       NA|
+|       5|   940.0|  1008.0|      941.3|             NA|      938.3|             NA|        24.2| 25.9|       NA|
+|       6|   940.8|  1009.0|      942.3|             NA|      939.9|             NA|        23.4| 26.9|       NA|
 
 ***
 
@@ -102,7 +116,8 @@ weatherMonth %>% head() %>% select(c(1:10)) %>% knitr::kable()
 
 另外有特別的是，竹子湖可能是因處在陽明山山坳的地區，所以颱風當時雖然雨勢驚人，但是風速反而是板橋、高雄這類平地/海港邊的區域較大，所以山區防雨、平地防風!?
 
-```{r fig.align='center'}
+
+{% highlight r %}
 weatherMonth2 <- read.csv('d:/weatherMonth2.txt', fileEncoding = 'UTF-8', sep = ',', header = TRUE, stringsAsFactors = FALSE) %>% tbl_dt()
 
 weatherMonth2 %>% select(station, cdate, WS, Precp, PrecpHour) %>%
@@ -127,18 +142,20 @@ weatherMonth2 %>% select(station, cdate, WS, Precp, PrecpHour) %>%
     annotate('text', label = '梅姬颱風', x = as.Date('2016-09-27'), y = Inf, vjust = 2, hjust = 1) +
     geom_hline(data = data.frame(vType = 'WS'), aes(yintercept = 5), linetype = 2, colour = 'grey50')
   }
+{% endhighlight %}
 
-```
+<img src="https://ddtwu.github.io/figures/2016-10-03-tp-weather-fetch/unnamed-chunk-4-1.png" title="center" alt="center" style="display: block; margin: auto;" />
 
 ***
 
-印象中梅姬颱風當時板橋風相當地大，待在公寓大樓甚至會有敖晃的錯覺，所以好奇心驅使下，將9/26~9/29這四天的逐小時紀錄撈出來觀察。
+印象中梅姬颱風當時板橋風相當地大，待在公寓大樓甚至會有搖晃的錯覺，所以好奇心驅使下，將9/26~9/29這四天的逐小時紀錄撈出來觀察。
 
 在梅姬颱風影響台灣的這兩天，從板橋來看在9/27 07:00~19:00這段時間風勢確實非常強勁，在中午過後甚至到達15級以上，Wiki的[蒲福氏風級](https://zh.wikipedia.org/wiki/%E8%92%B2%E7%A6%8F%E6%B0%8F%E9%A2%A8%E7%B4%9A)已經為**極強颱颶風(Hyper Ty Hurricane)**，難怪當時躲在家中依然感到搖頭晃腦。
 
 不過從9/28開始，風速就有明顯地下降，雨量除了高雄依然有間歇雨勢，也算是緩和下來了，雖然有人會質疑多放一天假的決定，但是對於家裡遭受梅姬颱風破壞的人來說，這一天的假就是用來恢復家園，而不是跟其他幸運兒一樣，可以跑去塞爆電影院、KTV、百貨公司。
 
-```{r fig.align='center'}
+
+{% highlight r %}
 weatherDate3 <- read.csv('d:/weatherDate3.txt', fileEncoding = 'UTF-8', sep = ',', header = TRUE, stringsAsFactors = FALSE) %>% tbl_dt()
 
 weatherDate3 %>% 
@@ -165,15 +182,17 @@ weatherDate3 %>%
       scale_x_datetime(limits = lim, breaks = date_breaks("6 hour"), labels = date_format("%m/%d %H:%M", tz = 'Asia/Taipei')) +
       annotate('text', label = '颱風假:09-27~09-28', x = as.POSIXct(strptime('2016-09-29', format = '%Y-%m-%d')), y = Inf, vjust = 2, hjust = 1)
   }
-  
-```
+{% endhighlight %}
+
+<img src="https://ddtwu.github.io/figures/2016-10-03-tp-weather-fetch/unnamed-chunk-5-1.png" title="center" alt="center" style="display: block; margin: auto;" />
 
 ***
 
 ### **Reference Code**
 Loop process:
 
-```{r eval=FALSE}
+
+{% highlight r %}
 # 2016-09的三個氣象觀測站的日報
 # loop 2016-09-01~2016-09-30 & 3 stations
 stationID <- c('466880','466930','467440')
@@ -240,5 +259,4 @@ for (i in 1:3){
   weatherMonth2 %<>% bind_rows(weatherMonth)
   sprintf('stationName = %s is done!!, time duration = %s min', stationName[i], difftime(Sys.time(), t0, units = 'mins')) %>% print()
 }
-
-```
+{% endhighlight %}

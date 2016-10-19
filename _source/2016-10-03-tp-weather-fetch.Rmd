@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "使用R擷取中央氣象局資料"
-date:   2016-10-02
+title:  "使用 R 擷取中央氣象局資料"
+date:   2016-10-03
 categories: posts
 output: html_document
 ---
@@ -9,9 +9,10 @@ output: html_document
 最近因為工作需要，老闆好奇天氣資料與門店人流或銷售數字的關聯性，看了中央氣象局的[資料申購方法](http://e-service.cwb.gov.tw/wdps/cwb_fee.htm)，為了做個簡單的POC就得花錢買詳細的氣象資料，似乎太大張旗鼓了。還好，氣象局的[觀測資料查詢系統](http://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp)可以提供手動查詢部分氣象站的資訊，觀察網頁的URL，只要進行日期的替換就可以做特定時間的查詢，而且產出的頁面也是整齊的表格，正好可以測試使用R爬取網頁資料的程序。
 
 
-```{r echo=FALSE, message=FALSE, results='hide'}
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 # Load required packages
-pkgs <- c('data.table', "plyr", "magrittr", 'reshape2', 'lubridate', 'stringr', 'ggplot2', 'dplyr', 'tidyr')
+.libPaths(c("d:/0.R_packages", .libPaths()))
+pkgs <- c('data.table', "plyr", "magrittr", 'reshape2', 'lubridate', 'ggplot2', 'dplyr', 'tidyr', 'stringr')
 suppressPackageStartupMessages(lapply(pkgs, library, character.only=T, lib.loc = .libPaths()[1]))
 
 library(RCurl)
@@ -89,9 +90,9 @@ weatherMonth %>% head() %>% select(c(1:10)) %>% knitr::kable()
 剛好九月底的梅姬颱風讓大家罕見地放了兩天假，也一併解決了教師節(9/28)是否放假的爭議，好奇心地驅使下，設定了三個不同的站點，想來看看當時的天氣到底有多惡劣。我取了板橋、竹子湖、高雄這三個站點的觀測紀錄，時間範圍限定在2016-09。
 
 > 
-**板橋：生活範圍，北區**  
-**竹子湖：半山腰，北區**  
-**高雄：海港邊，南區**  
+  - **板橋**：生活範圍，北區  
+  - **竹子湖**：半山腰，北區  
+  - **高雄**：海港邊，南區  
 
 ***
 
@@ -131,7 +132,7 @@ weatherMonth2 %>% select(station, cdate, WS, Precp, PrecpHour) %>%
 
 ***
 
-印象中梅姬颱風當時板橋風相當地大，待在公寓大樓甚至會有敖晃的錯覺，所以好奇心驅使下，將9/26~9/29這四天的逐小時紀錄撈出來觀察。
+印象中梅姬颱風當時板橋風相當地大，待在公寓大樓甚至會有搖晃的錯覺，所以好奇心驅使下，將9/26~9/29這四天的逐小時紀錄撈出來觀察。
 
 在梅姬颱風影響台灣的這兩天，從板橋來看在9/27 07:00~19:00這段時間風勢確實非常強勁，在中午過後甚至到達15級以上，Wiki的[蒲福氏風級](https://zh.wikipedia.org/wiki/%E8%92%B2%E7%A6%8F%E6%B0%8F%E9%A2%A8%E7%B4%9A)已經為**極強颱颶風(Hyper Ty Hurricane)**，難怪當時躲在家中依然感到搖頭晃腦。
 
@@ -169,7 +170,7 @@ weatherDate3 %>%
 
 ***
 
-##### **Reference Code**
+### **Reference Code**
 Loop process:
 
 ```{r eval=FALSE}
@@ -241,7 +242,3 @@ for (i in 1:3){
 }
 
 ```
-
-
-
-

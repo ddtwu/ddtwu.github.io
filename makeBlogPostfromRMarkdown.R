@@ -23,8 +23,8 @@ KnitPost <- function(baseURL, filePath, input, output) {
 
 KnitPost(baseURL = 'https://ddtwu.github.io/',
          filePath = 'D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/',
-         input = '_source/2016-10-03-rmd-test.Rmd',
-         output = '_posts/2016-10-03-rmd-test.md')
+         input = '_source/2016-10-03-tp-weather-fetch.Rmd',
+         output = '_posts/2016-10-03-tp-weather-fetch.md')
 
 
 
