@@ -1,74 +1,31 @@
+KnitPost <- function(baseURL, filePath, input, output) {
 
-.libPaths(c("d:/0.R_packages", .libPaths()))
+  # baseURL: blog 的連結
+  # filePath: blog 資料檔路徑
+  # input: .rmd 所在的路徑
+  # output: .md 輸出的路徑
 
-KnitPost <- function(input, base.url = myjekyllsite) {
-  
-  # .libPaths(c("d:/0.R_packages", .libPaths()))
-  # pkgs <- c('data.table', "plyr", "magrittr", 'reshape2', 'lubridate', 'ggplot2', 'dplyr', 'tidyr')
-  # suppressPackageStartupMessages(lapply(pkgs, library, character.only=T, lib.loc = .libPaths()[1]))
-  
+  .libPaths(c("d:/0.R_packages", .libPaths()))
   require(knitr)
-
-  d <- sub(".Rmd$", "", basename(input))
   
-  opts_knit$set(base.url = base.url)
-  fig.path <- paste0("figures/", d, "/")
+  inputPath <- paste0(filePath, input)
+  outputPath <- paste0(filePath, output)
   
-  opts_chunk$set(fig.path = fig.path)
-  opts_chunk$set(fig.cap = "center")
+  dName <- sub(".Rmd$", "", basename(input))
+  figPath <- paste0("figures/", dName, "/")
+  
+  opts_knit$set(base.url = baseURL)
+  opts_chunk$set(fig.path = figPath, fig.cap = "center")
   render_jekyll()
   
-  knit(input, envir = parent.frame(), encoding = 'UTF-8')
+  knit(input = inputPath, output = outputPath, envir = parent.frame(), encoding = 'UTF-8')
 }
 
-KnitPost(input = "D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/_source/2016-10-03-rmd-test.Rmd",
-         base.url = "https://ddtwu.github.io/")
+KnitPost(baseURL = 'https://ddtwu.github.io/',
+         filePath = 'D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/',
+         input = '_source/2016-10-03-rmd-test.Rmd',
+         output = '_posts/2016-10-03-rmd-test.md')
 
 
-
-
-
-#----------------------------------------#
-library(servr)
-
-servr::jekyll(dir = "D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/",
-              input = '_source',
-              output = '_posts',
-              serve = FALSE)
-
-jekyll <- 
-function (dir = ".", 
-          input = c(".", "_source", "_posts"), 
-          output = c(".",  "_posts", "_posts"), 
-          script = c("Makefile", "build.R"), 
-          serve = TRUE, 
-          command = "jekyll build", ...) 
-{
-  
-  baseurl = jekyll_config(dir, "baseurl", "")
-  destination = jekyll_config(dir, "destination", "_site")
-  jekyll_build = function() {
-    if (system(command) != 0) 
-      stop("Failed to run: ", command)
-  }
-  
-  build_all = function() knit_maybe(input, output, script, 
-                                    method = "jekyll")
-  
-  if (!serve) {
-    in_dir(dir, {
-      build_all()
-      jekyll_build()
-    })
-    return()
-  }
-  
-  dynamic_site(dir, ..., build = function(...) {
-    update = build_all()
-    if (update || !file_test("-d", destination)) 
-      jekyll_build()
-    update
-  }, site.dir = destination, baseurl = baseurl)
-}
 
 

@@ -27,7 +27,7 @@ library(plotly)
 
 先做一次性的測試:  
 
-```{r warning=FALSE, eval=FALSE}
+```{r warning=FALSE, eval=TRUE}
 # 先設定好站點編號
 stationID <- '466930'
 
@@ -74,7 +74,7 @@ weatherMonth %<>% mutate(station = '竹子湖', cdate = as.Date(str_c(fmonth, Ob
 ***
 
 確認結果表都有抓到:
-```{r , eval=FALSE}
+```{r , eval=TRUE}
 # 日報(逐小時的紀錄)
 weatherDate %>% head() %>% select(c(1:10)) %>% knitr::kable()
 
