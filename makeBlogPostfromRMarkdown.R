@@ -1,6 +1,5 @@
-.libPaths(c("d:/0.R_packages", .libPaths()))
 
-myjekyllsite = c("D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/")
+.libPaths(c("d:/0.R_packages", .libPaths()))
 
 KnitPost <- function(input, base.url = myjekyllsite) {
   
@@ -8,20 +7,22 @@ KnitPost <- function(input, base.url = myjekyllsite) {
   # pkgs <- c('data.table', "plyr", "magrittr", 'reshape2', 'lubridate', 'ggplot2', 'dplyr', 'tidyr')
   # suppressPackageStartupMessages(lapply(pkgs, library, character.only=T, lib.loc = .libPaths()[1]))
   
-  
   require(knitr)
 
-
+  d <- sub(".Rmd$", "", basename(input))
+  
   opts_knit$set(base.url = base.url)
-  fig.path <- paste0("figures/", sub(".Rmd$", "", basename(input)), "/")
+  fig.path <- paste0("figures/", d, "/")
+  
   opts_chunk$set(fig.path = fig.path)
   opts_chunk$set(fig.cap = "center")
   render_jekyll()
+  
   knit(input, envir = parent.frame(), encoding = 'UTF-8')
-
 }
 
-KnitPost(input = "D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/_source/2016-10-03-rmd-test.Rmd")
+KnitPost(input = "D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/_source/2016-10-03-rmd-test.Rmd",
+         base.url = "https://ddtwu.github.io/")
 
 
 
@@ -43,14 +44,17 @@ function (dir = ".",
           serve = TRUE, 
           command = "jekyll build", ...) 
 {
+  
   baseurl = jekyll_config(dir, "baseurl", "")
   destination = jekyll_config(dir, "destination", "_site")
   jekyll_build = function() {
     if (system(command) != 0) 
       stop("Failed to run: ", command)
   }
+  
   build_all = function() knit_maybe(input, output, script, 
                                     method = "jekyll")
+  
   if (!serve) {
     in_dir(dir, {
       build_all()
@@ -58,6 +62,7 @@ function (dir = ".",
     })
     return()
   }
+  
   dynamic_site(dir, ..., build = function(...) {
     update = build_all()
     if (update || !file_test("-d", destination)) 

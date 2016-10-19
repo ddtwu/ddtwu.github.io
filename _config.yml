@@ -3,3 +3,5 @@ permalink: /:year/:month/:title/
 url: https://ddtwu.github.io
 author: MarvinWu
 highlighter: rouge
+exclude:
+  - "*.Rmd"
