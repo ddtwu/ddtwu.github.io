@@ -13,7 +13,7 @@ KnitPost <- function(input, base.url = myjekyllsite) {
   knit(input, envir = parent.frame())
 }
 
-KnitPost(input = "D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/_posts/2016-10-03-rmd-test.Rmd")
+KnitPost(input = "D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/_source/2016-10-03-rmd-test.Rmd")
 
 
 
