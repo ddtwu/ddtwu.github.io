@@ -3,7 +3,14 @@
 myjekyllsite = c("D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/")
 
 KnitPost <- function(input, base.url = myjekyllsite) {
+  
+  # .libPaths(c("d:/0.R_packages", .libPaths()))
+  # pkgs <- c('data.table', "plyr", "magrittr", 'reshape2', 'lubridate', 'ggplot2', 'dplyr', 'tidyr')
+  # suppressPackageStartupMessages(lapply(pkgs, library, character.only=T, lib.loc = .libPaths()[1]))
+  
+  
   require(knitr)
+
 
   opts_knit$set(base.url = base.url)
   fig.path <- paste0("figures/", sub(".Rmd$", "", basename(input)), "/")

@@ -12,7 +12,7 @@ output: html_document
 ```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 # Load required packages
 .libPaths(c("d:/0.R_packages", .libPaths()))
-pkgs <- c('data.table', "plyr", "magrittr", 'reshape2', 'lubridate', 'stringr', 'ggplot2', 'dplyr', 'tidyr')
+pkgs <- c('data.table', "plyr", "magrittr", 'reshape2', 'lubridate', 'ggplot2', 'dplyr', 'tidyr')
 suppressPackageStartupMessages(lapply(pkgs, library, character.only=T, lib.loc = .libPaths()[1]))
 
 library(RCurl)
@@ -27,7 +27,7 @@ library(plotly)
 
 先做一次性的測試:  
 
-```{r warning=FALSE, eval=TRUE}
+```{r warning=FALSE, eval=FALSE}
 # 先設定好站點編號
 stationID <- '466930'
 
@@ -74,7 +74,7 @@ weatherMonth %<>% mutate(station = '竹子湖', cdate = as.Date(str_c(fmonth, Ob
 ***
 
 確認結果表都有抓到:
-```{r , eval=TRUE}
+```{r , eval=FALSE}
 # 日報(逐小時的紀錄)
 weatherDate %>% head() %>% select(c(1:10)) %>% knitr::kable()
 
@@ -85,3 +85,160 @@ weatherMonth %>% head() %>% select(c(1:10)) %>% knitr::kable()
 
 ***
 
+確認上述的程式可以抓到所要查詢氣象觀測站點的資料，因為格式相當固定，所以在HTML的整理上不會耗費太多精力，就是把table物件擷取出來即可。可惜後來專案變化，不需要再進行原本的分析，想想程式已經起頭了，就來收個尾吧。
+
+剛好九月底的梅姬颱風讓大家罕見地放了兩天假，也一併解決了教師節(9/28)是否放假的爭議，好奇心地驅使下，設定了三個不同的站點，想來看看當時的天氣到底有多惡劣。我取了板橋、竹子湖、高雄這三個站點的觀測紀錄，時間範圍限定在2016-09。
+
+> 
+**板橋：生活範圍，北區**  
+**竹子湖：半山腰，北區**  
+**高雄：海港邊，南區**  
+
+***
+
+先進行逐日數據的比較，主要以降水量、風速，以及自製的_降水強度_做比較。降水強度是為了消除下雨時數對雨量判斷的影響。
+
+從莫蘭蒂颱風來看，當時高雄在降雨與風速上都比北區來的高，反映在當時颱風對南部區域的破壞較大，而且整個北部區域都還是正常上班上課。不過梅姬颱風就對南北區域都造成影響，風速不論是板橋or高雄都破表，雖然降雨的部分並未像莫蘭蒂那麼強，但是單單考量風速對通勤造成的危險性，全台灣幾乎各縣市都停止上班上課。
+
+另外有特別的是，竹子湖可能是因處在陽明山山坳的地區，所以颱風當時雖然雨勢驚人，但是風速反而是板橋、高雄這類平地/海港邊的區域較大，所以山區防雨、平地防風!?
+
+```{r fig.align='center'}
+weatherMonth2 <- read.csv('d:/weatherMonth2.txt', fileEncoding = 'UTF-8', sep = ',', header = TRUE, stringsAsFactors = FALSE) %>% tbl_dt()
+
+weatherMonth2 %>% select(station, cdate, WS, Precp, PrecpHour) %>%
+  mutate(RainStrength = Precp/(PrecpHour/24)) %>%
+  select(-PrecpHour) %>%
+  gather(key = 'vType', value = 'value', -c(1,2)) %>%
+  mutate(value = ifelse(is.na(value), 0, value), cdate = as.Date(cdate)) %>% {
+    
+    flabels <- c('Precp' = '降水量', 'RainStrength' = '降水強度', 'WS' = '風速')
+
+    ggplot(data = ., aes(x = cdate, y = value, group = station, colour = station)) +
+    geom_line(size = 1.5) +
+    labs(x = '', y = '', title = '2016-09 逐日氣象資料') +
+    facet_grid(vType~., scales = 'free_y', labeller = as_labeller(flabels)) +
+    theme_bw() +
+    theme(strip.text = element_text(size = 10, face = 'bold'),
+          title = element_text(size = 10, face = 'bold'),
+          legend.text = element_text(size = 10, face = 'bold')) +
+    annotate("rect", xmin=as.Date('2016-09-14'), xmax=as.Date('2016-09-15'), ymin=0, ymax=Inf, alpha=0.2, fill="red") +
+    annotate("rect", xmin=as.Date('2016-09-27'), xmax=as.Date('2016-09-28'), ymin=0, ymax=Inf, alpha=0.2, fill="red") +
+    annotate('text', label = '莫蘭蒂颱風', x = as.Date('2016-09-14'), y = Inf, vjust = 2, hjust = 1) +
+    annotate('text', label = '梅姬颱風', x = as.Date('2016-09-27'), y = Inf, vjust = 2, hjust = 1) +
+    geom_hline(data = data.frame(vType = 'WS'), aes(yintercept = 5), linetype = 2, colour = 'grey50')
+  }
+
+```
+
+***
+
+印象中梅姬颱風當時板橋風相當地大，待在公寓大樓甚至會有敖晃的錯覺，所以好奇心驅使下，將9/26~9/29這四天的逐小時紀錄撈出來觀察。
+
+在梅姬颱風影響台灣的這兩天，從板橋來看在9/27 07:00~19:00這段時間風勢確實非常強勁，在中午過後甚至到達15級以上，Wiki的[蒲福氏風級](https://zh.wikipedia.org/wiki/%E8%92%B2%E7%A6%8F%E6%B0%8F%E9%A2%A8%E7%B4%9A)已經為**極強颱颶風(Hyper Ty Hurricane)**，難怪當時躲在家中依然感到搖頭晃腦。
+
+不過從9/28開始，風速就有明顯地下降，雨量除了高雄依然有間歇雨勢，也算是緩和下來了，雖然有人會質疑多放一天假的決定，但是對於家裡遭受梅姬颱風破壞的人來說，這一天的假就是用來恢復家園，而不是跟其他幸運兒一樣，可以跑去塞爆電影院、KTV、百貨公司。
+
+```{r fig.align='center'}
+weatherDate3 <- read.csv('d:/weatherDate3.txt', fileEncoding = 'UTF-8', sep = ',', header = TRUE, stringsAsFactors = FALSE) %>% tbl_dt()
+
+weatherDate3 %>% 
+  filter(cdate >= as.Date('2016-09-26') & cdate <= as.Date('2016-09-29')) %>% 
+  select(station, ctime, Precp, WS) %>% 
+  gather(key = 'vType', value = 'value', -c(1,2)) %>%
+  mutate(value = ifelse(is.na(value), 0, value), ctime = as.POSIXct(strptime(ctime, format = '%Y-%m-%d %H:%M:%S'))) %>% 
+  arrange(station, vType, ctime) %>% {
+   
+    flabels <- c('Precp' = '降水量', 'WS' = '風速')
+    lim <- as.POSIXct(c(strptime('2016-09-26 00:00:00', format = '%Y-%m-%d %H:%M:%S'), strptime('2016-09-30 00:00:00', format = '%Y-%m-%d %H:%M:%S')))
+    
+    ggplot(data = ., aes(x = ctime, y = value, group = station, colour = station)) +
+      geom_line(size = 1.5) + 
+      labs(x = '', y = '', title = '2016-09-26~2016-09-29 逐時氣象資料') +
+      facet_grid(vType~., scales = 'free_y', labeller = as_labeller(flabels)) +
+      theme_bw() +
+      theme(strip.text = element_text(size = 10, face = 'bold'),
+            title = element_text(size = 10, face = 'bold'),
+            legend.text = element_text(size = 10, face = 'bold'),
+            axis.text.x = element_text(angle = 90)) +
+      geom_hline(data = data.frame(vType = 'WS'), aes(yintercept = 5), linetype = 2, colour = 'grey50') +
+      annotate("rect", xmin = as.POSIXct(strptime('2016-09-27', format = '%Y-%m-%d')), xmax = as.POSIXct(strptime('2016-09-29', format = '%Y-%m-%d')), ymin=0, ymax=Inf, alpha=0.2, fill="red") +
+      scale_x_datetime(limits = lim, breaks = date_breaks("6 hour"), labels = date_format("%m/%d %H:%M", tz = 'Asia/Taipei')) +
+      annotate('text', label = '颱風假:09-27~09-28', x = as.POSIXct(strptime('2016-09-29', format = '%Y-%m-%d')), y = Inf, vjust = 2, hjust = 1)
+  }
+  
+```
+
+***
+
+##### **Reference Code**
+Loop process:
+
+```{r eval=FALSE}
+# 2016-09的三個氣象觀測站的日報
+# loop 2016-09-01~2016-09-30 & 3 stations
+stationID <- c('466880','466930','467440')
+stationName <- c('板橋','竹子湖','高雄')
+dateList <- seq.Date(from = as.Date('2016-09-01'), to = as.Date('2016-09-30'), by = 'days')
+tbNames <- c('ObsTime','StnPres','SeaPres','Temperature','TdDewPoint','RH','WS','WD','WSGust','WDGust','Precp','PrecpHour','SunShine','GloblRad','Visb')
+
+
+weatherDate3 <- NULL
+for (i in 1:3){
+  t0 <- Sys.time()
+
+  weatherDate2 <- NULL
+  for (j in 1:length(dateList)) {
+    t00 <- Sys.time()
+    Sys.sleep(time = runif(n=1, min=1, max=3))
+    
+    cwbURL <- sprintf('http://e-service.cwb.gov.tw/HistoryDataQuery/DayDataController.do?command=viewMain&station=%s&stname=%s&datepicker=%s', stationID[i], '%25E8%2587%25BA%25E5%258C%2597', dateList[j])
+    tmpTb <- cwbURL %>% 
+      getURL() %>% 
+      htmlParse(., encoding = 'utf8', asText = TRUE) %>% 
+      readHTMLTable(header = TRUE) %$%
+      MyTable %>% 
+      tbl_dt()
+    
+    tmpTb %<>% filter(row.names(tmpTb) != 1)
+    tmpTb %<>% mutate_each(funs(as.numeric(as.character(.)))) %>% arrange(V1) 
+    names(tmpTb) <- tbNames
+    tmpTb %<>% mutate(station = stationName[i], cdate = dateList[j])
+    
+    weatherDate2 %<>% bind_rows(tmpTb)
+    sprintf('stationName = %s, FetchDate = %s , time duration = %s min', stationName[i], dateList[j], difftime(Sys.time(), t00, units = 'mins')) %>% print()
+  }
+  
+weatherDate3 %<>% bind_rows(weatherDate2)
+sprintf('stationName = %s is done!!, time duration = %s min', stationName[i], difftime(Sys.time(), t0, units = 'mins')) %>% print()
+}
+
+#-----------------------------------------------#
+# 2016-09的三個氣象觀測站的月報
+# loop 3 stations
+stationID <- c('466880','466930','467440')
+stationName <- c('板橋','竹子湖','高雄')
+tbNames <- c('ObsTime','StnPres','SeaPres','StnPresMax','StnPresMaxTime','StnPresMin','StnPresMinTime','Temperature','TMax','TMaxTime','TMin','TMinTime','TdDewPoint','RH','RHMin','RHMinTime','WS','WD','WSGust','WDGust','WGustTime','Precp','PrecpHour','PrecpMax10','PrecpMax10Time','PrecpHrMax','PrecpHrMaxTime','SunShine','SunShineRate','GloblRad','VisbMean','EvapA')
+fmonth <- '2016-09'
+
+weatherMonth2 <- NULL
+for (i in 1:3){
+  t0 <- Sys.time()
+  
+  cwbURL <- sprintf('http://e-service.cwb.gov.tw/HistoryDataQuery/MonthDataController.do?command=viewMain&station=%s&stname=%s&datepicker=%s', stationID[i], '%25E7%25AB%25B9%25E5%25AD%2590%25E6%25B9%2596', fmonth)
+  weatherMonth <- cwbURL %>% 
+    getURL() %>% 
+    htmlParse(., encoding = 'utf8', asText = TRUE) %>% 
+    readHTMLTable(header = TRUE) %$%
+    MyTable %>% 
+    tbl_dt()
+  
+  weatherMonth %<>% filter(row.names(weatherMonth) != 1)
+  weatherMonth %<>% mutate_each(funs(as.numeric(as.character(.)))) %>% arrange(V1) 
+  names(weatherMonth) <- tbNames
+  weatherMonth %<>% mutate(station = stationName[i], cdate = as.Date(str_c(fmonth, ObsTime, sep = '-')))
+  
+  weatherMonth2 %<>% bind_rows(weatherMonth)
+  sprintf('stationName = %s is done!!, time duration = %s min', stationName[i], difftime(Sys.time(), t0, units = 'mins')) %>% print()
+}
+
+```
