@@ -3,4 +3,3 @@ permalink: /:year/:month/:title/
 url: https://ddtwu.github.io
 author: MarvinWu
 highlighter: rouge
-encoding: UTF-8

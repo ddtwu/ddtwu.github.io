@@ -11,6 +11,8 @@ KnitPost <- function(input, base.url = myjekyllsite) {
   opts_chunk$set(fig.cap = "center")
   render_jekyll()
   knit(input, envir = parent.frame())
+  
+  knitr::knit(encoding = 'UTF-8')
 }
 
 KnitPost(input = "D:/MarvinWuPersonal/MarvinBlog/myJekyllBlog/_source/2016-10-03-rmd-test.Rmd")
