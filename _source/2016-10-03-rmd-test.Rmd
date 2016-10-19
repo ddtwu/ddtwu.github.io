@@ -9,8 +9,9 @@ output: html_document
 最近因為工作需要，老闆好奇天氣資料與門店人流或銷售數字的關聯性，看了中央氣象局的[資料申購方法](http://e-service.cwb.gov.tw/wdps/cwb_fee.htm)，為了做個簡單的POC就得花錢買詳細的氣象資料，似乎太大張旗鼓了。還好，氣象局的[觀測資料查詢系統](http://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp)可以提供手動查詢部分氣象站的資訊，觀察網頁的URL，只要進行日期的替換就可以做特定時間的查詢，而且產出的頁面也是整齊的表格，正好可以測試使用R爬取網頁資料的程序。
 
 
-```{r echo=FALSE, message=FALSE, results='hide'}
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 # Load required packages
+.libPaths(c("d:/0.R_packages", .libPaths()))
 pkgs <- c('data.table', "plyr", "magrittr", 'reshape2', 'lubridate', 'stringr', 'ggplot2', 'dplyr', 'tidyr')
 suppressPackageStartupMessages(lapply(pkgs, library, character.only=T, lib.loc = .libPaths()[1]))
 
